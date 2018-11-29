@@ -3,14 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Demon的博客</title>
+  <title>Android CoordinatorLayout | Demon的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Demon的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="CoordinatorLayout 协调布局，可以理解为功能更强大的 FrameLayout 布局。它在普通情况下作用和 FrameLayout 基本一致，通常适用于两种使用方式：第一，最为界面最顶层的装饰布局；第二，作为包含一个或多个子视图的特定交互容器。CoordinatorLayout 可以监听其所有子控件的各种事件，然后帮我们做出最为合理的响应。下面看一个简单的例子，代码如下。 12345">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android CoordinatorLayout">
+<meta property="og:url" content="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/index.html">
 <meta property="og:site_name" content="Demon的博客">
+<meta property="og:description" content="CoordinatorLayout 协调布局，可以理解为功能更强大的 FrameLayout 布局。它在普通情况下作用和 FrameLayout 基本一致，通常适用于两种使用方式：第一，最为界面最顶层的装饰布局；第二，作为包含一个或多个子视图的特定交互容器。CoordinatorLayout 可以监听其所有子控件的各种事件，然后帮我们做出最为合理的响应。下面看一个简单的例子，代码如下。 12345">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3304008-c348e3cf95781e92.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3304008-abb063a24658d211.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3304008-bc62a954b063651c.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3304008-18f2252d68573071.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3304008-14b9c15004cae3c7.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2018-11-29T13:05:14.343Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Demon的博客">
+<meta name="twitter:title" content="Android CoordinatorLayout">
+<meta name="twitter:description" content="CoordinatorLayout 协调布局，可以理解为功能更强大的 FrameLayout 布局。它在普通情况下作用和 FrameLayout 基本一致，通常适用于两种使用方式：第一，最为界面最顶层的装饰布局；第二，作为包含一个或多个子视图的特定交互容器。CoordinatorLayout 可以监听其所有子控件的各种事件，然后帮我们做出最为合理的响应。下面看一个简单的例子，代码如下。 12345">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3304008-c348e3cf95781e92.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternate" href="/atom.xml" title="Demon的博客" type="application/atom+xml">
   
@@ -59,95 +69,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-Android-ConstraintLayout" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/29/Android-ConstraintLayout/" class="article-date">
-  <time datetime="2018-11-29T13:05:45.000Z" itemprop="datePublished">2018-11-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Android-ConstraintLayout/">Android ConstraintLayout</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一、传统界面布局"><a href="#一、传统界面布局" class="headerlink" title="一、传统界面布局"></a>一、传统界面布局</h2><p>在安卓开发中，界面编程是一个很重要的部分，而很多时候为了实现好看的 ui 界面会用到很多层的布局来实现，当一个应用的界面含有多个控件并且布局嵌套的层级大于三层时可能界面的渲染速度就会变慢，导致界面丢帧，这时界面加载起来就会很不流畅。极端情况下也会发生 ANR (Application Not Responding) 。因此一个优秀的界面应该尽量的去满足以下两点。</p>
-<ul>
-<li>布局嵌套的层级经可能的少</li>
-<li>布局中的控件应该尽可能的使用相对位置。<br>使用相对位置可以在不用分辨率的设备中保持布局效果的一致性。</li>
-</ul>
-<p>但是以上两点往往是冲突的，降低嵌套层级的方式是使用 <code>RelativeLayout</code>, 而基于相对位置使用的是 <code>LinearLayout</code>。当界面过于复杂时需要大量的 <code>LinearLayout</code> 保证控件的相对摆放，这样会导致嵌套层级过多，如果使用 <code>RelativeLayout</code>控件之间的关系及其冗余,这时的界面可读性差也难与修改。</p>
-<h2 id="二、ConstraintLayout布局"><a href="#二、ConstraintLayout布局" class="headerlink" title="二、ConstraintLayout布局"></a>二、ConstraintLayout布局</h2><p><code>ConstraintLayout</code> 即约束布局，在2016年的 Google I/O 大会上推出，可一定程度的替代掉 <code>RelativeLayout</code> 和 <code>LinearLayout</code> 接下来就开始了解一些简单的用法。</p>
-<ol>
-<li>Hello World 的布局<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    tools:context=&quot;.MainActivity&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;TextView</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;Hello World!&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这个熟悉的代码正是新版本的 Android Studio 新建项目时自动生成的布局文件，可以看到这个界面的根布局正是 <code>ConstraintLayout</code>。这个效果是让 Hello World! 居中，其标准性模板如下</p>
-<blockquote>
-<p>app:layout_constraint[ 本源位置 ]_to[ 目标位置 ]=”[ 目标id ]”</p>
-</blockquote>
-<ol>
-<li>指定约束<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:id=&quot;@+id/constraintLayout&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/cancel_button&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_marginStart=&quot;16dp&quot;</span><br><span class="line">        android:layout_marginBottom=&quot;16dp&quot;</span><br><span class="line">        android:text=&quot;取消&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;@id/constraintLayout&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/next_button&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_marginStart=&quot;16dp&quot;</span><br><span class="line">        android:layout_marginBottom=&quot;16dp&quot;</span><br><span class="line">        android:text=&quot;下一步&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintStart_toEndOf=&quot;@id/cancel_button&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3304008-deb236dda2b71305.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<ol>
-<li>设置比例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:id=&quot;@+id/constraintLayout&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;居中&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintEnd_toEndOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@+id/constraintLayout&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;按比例偏移&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintEnd_toEndOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintHorizontal_bias=&quot;0.25&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintVertical_bias=&quot;0.25&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3304008-1437eee20a5be165.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<ol>
-<li>引导线布局<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</span><br><span class="line">    android:id=&quot;@+id/constraintLayout&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;android.support.constraint.Guideline</span><br><span class="line">        android:id=&quot;@+id/guideLine&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:orientation=&quot;vertical&quot;</span><br><span class="line">        app:layout_constraintGuide_begin=&quot;72dp&quot;</span><br><span class="line">        tools:layout_editor_absoluteX=&quot;72dp&quot;</span><br><span class="line">        tools:layout_editor_absoluteY=&quot;0dp&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;向上&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;@id/guideLine&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintVertical_bias=&quot;0.25&quot;</span><br><span class="line">        tools:layout_editor_absoluteX=&quot;72dp&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;向下&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;@id/guideLine&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintVertical_bias=&quot;0.75&quot;</span><br><span class="line">        tools:layout_editor_absoluteX=&quot;72dp&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3304008-f029a07c9f86d150.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<ol>
-<li>布局填充<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:id=&quot;@+id/constraintLayout&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/small&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;0dp&quot;</span><br><span class="line">        android:text=&quot;自适应大小&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@id/constraintLayout&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:layout_width=&quot;0dp&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;取最宽的宽度&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintEnd_toEndOf=&quot;@id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintStart_toEndOf=&quot;@id/small&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@id/constraintLayout&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3304008-aac7388542989c97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<ol>
-<li>控件宽高比<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:id=&quot;@+id/constraintLayout&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:layout_width=&quot;0dp&quot;</span><br><span class="line">        android:layout_height=&quot;200dp&quot;</span><br><span class="line">        android:background=&quot;@color/colorAccent&quot;</span><br><span class="line">        android:src=&quot;@mipmap/home_ban&quot;</span><br><span class="line">        app:layout_constraintDimensionRatio=&quot;16:9&quot;</span><br><span class="line">        app:layout_constraintLeft_toLeftOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintRight_toRightOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;@+id/constraintLayout&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:layout_width=&quot;200dp&quot;</span><br><span class="line">        android:layout_height=&quot;0dp&quot;</span><br><span class="line">        android:background=&quot;@color/colorAccent&quot;</span><br><span class="line">        android:contentDescription=&quot;@null&quot;</span><br><span class="line">        android:src=&quot;@mipmap/home_ban&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintDimensionRatio=&quot;4:3&quot;</span><br><span class="line">        app:layout_constraintLeft_toLeftOf=&quot;@+id/constraintLayout&quot;</span><br><span class="line">        app:layout_constraintRight_toRightOf=&quot;@+id/constraintLayout&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3304008-471125be558636b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<ol>
-<li>圆形定位<br>这个用法简直是完美的解决了消息列表里使用圆形头像时右上角的未读消息的点。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:id=&quot;@+id/constraintLayout&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:id=&quot;@+id/image&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:src=&quot;@mipmap/pic&quot;</span><br><span class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">        app:layout_constraintEnd_toEndOf=&quot;parent&quot;</span><br><span class="line">        app:layout_constraintStart_toStartOf=&quot;parent&quot;</span><br><span class="line">        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:layout_width=&quot;20dp&quot;</span><br><span class="line">        android:layout_height=&quot;20dp&quot;</span><br><span class="line">        android:src=&quot;@mipmap/login_sel_rel&quot;</span><br><span class="line">        app:layout_constraintCircle=&quot;@+id/image&quot;</span><br><span class="line">        app:layout_constraintCircleAngle=&quot;45&quot;</span><br><span class="line">        app:layout_constraintCircleRadius=&quot;70dp&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3304008-37d2d0f30a2f812a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li>《Android 开发强化实践》</li>
-<li><a href="https://blog.csdn.net/guolin_blog/article/details/53122387" target="_blank" rel="external">Android新特性介绍，ConstraintLayout完全解析</a></li>
-<li><a href="https://developer.android.com/reference/android/support/constraint/ConstraintLayout" target="_blank" rel="external">ConstraintLayout 官方文档</a></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjp2mbop10000xgf0bex2lr6x" class="article-share-link">Delen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Android-CoordinatorLayout" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Android-CoordinatorLayout" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/11/29/Android-CoordinatorLayout/" class="article-date">
   <time datetime="2018-11-29T13:04:52.000Z" itemprop="datePublished">2018-11-29</time>
@@ -160,8 +82,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/29/Android-CoordinatorLayout/">Android CoordinatorLayout</a>
+    <h1 class="article-title" itemprop="name">
+      Android CoordinatorLayout
     </h1>
   
 
@@ -224,109 +146,28 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-Hexo入门" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/08/Hexo入门/" class="article-date">
-  <time datetime="2017-11-08T14:52:42.000Z" itemprop="datePublished">2017-11-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2018/11/29/Android-ConstraintLayout/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Nieuwer</strong>
+      <div class="article-nav-title">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/Hexo入门/">Hexo入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><ul>
-<li>hexo init //初始化一个文件夹，它会为这个文件夹配置所有骨架</li>
-<li>hexo g //即hexo generate，生成静态文件</li>
-<li>hexo s //即hexo server，创建服务</li>
-<li>hexo d //即hexo deploy,用于将本地文件发布到github上</li>
-<li>hexo n //即hexo new,用于新建一篇文章</li>
-</ul>
-<h2 id="安装x"><a href="#安装x" class="headerlink" title="安装x"></a>安装x</h2><ul>
-<li><p>⑴安装Nodejs：<br>Node.js的官网下载地址是：<a href="https://nodejs.org/" target="_blank" rel="external">https://nodejs.org/</a><br>下载好之后，双击安装，一路Next即可</p>
-</li>
-<li><p>⑵安装Git for windows：<br>Git for windows 的下载地址是：<a href="https://git-for-windows.github.io/" target="_blank" rel="external">https://git-for-windows.github.io/</a><br>下载好后也同样是一路Next安装即可。</p>
-</li>
-<li><p>⑶安装Hexo：<br>1、 打开Git Bash，输入：npm install hexo-cli -g。<br>2、 进入文件加D:/MyBlog，右键Git Bash Here，输入hexo init。输入npm install。输入hexo g。输入hexo s。<br>3、浏览器输入地址localhost:4000查看。</p>
-</li>
-<li><p>⑷部署：<br>配置好后，输入hexo g。输入hexo d。<br>如果有错则输入<code>npm install hexo-deployer-git --save</code>。</p>
-</li>
-</ul>
-<h2 id="2018-11-29更新"><a href="#2018-11-29更新" class="headerlink" title="2018-11-29更新"></a>2018-11-29更新</h2><p>因为有很长的一段时间没有用hexo了，前两天试了半天尽然都提交不上去，这可把我给郁闷的。<br>现在终于找到了解决方法。将 _config.yml 文件里的 repository 改一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># repository: https://github.com/Demons96/Demons96.github.io.git</span><br><span class="line">  repository: git@github.com:Demons96/Demons96.github.io.git</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjp2mbop50001xgf0r88s90u6" class="article-share-link">Delen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/08/hello-world/" class="article-date">
-  <time datetime="2017-11-08T12:27:28.644Z" itemprop="datePublished">2017-11-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+          Android ConstraintLayout
         
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/hello-world/">Hello World</a>
-    </h1>
   
+    <a href="/2017/11/08/Hexo入门/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ouder</strong>
+      <div class="article-nav-title">Hexo入门</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjp2mbop70002xgf0a19o6ior" class="article-share-link">Delen</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
 
 </section>
         
