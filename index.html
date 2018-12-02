@@ -50,7 +50,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -60,6 +60,63 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-Android-中的-MVC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/02/Android-中的-MVC/" class="article-date">
+  <time datetime="2018-12-02T08:32:55.000Z" itemprop="datePublished">2018-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/02/Android-中的-MVC/">Android 中的 MVC</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h2><p>现在市面上很多成功的 Android 工程框架都来自于早期的 MVC 模型因此了解 MVC 还是很有必要的。 MVC 即 Model-View-Controller 中文名为模型视图控制器，是早期二十世纪八十年代为桌面应用建立起来的一个框架，现在反而在 web 引用中大放光彩。就拿 java 后台开发来说也衍生出了 SSH (Struts + Spring + Hibernate) 、SSM 、 SpringMVC 等优秀的框架。它们完美的将数据库数据、控制逻辑、以及界面的显示区分开来。但是在 Android 开发中很多时候都分不清这三者的界限导致 Activity 上的代码过于臃肿，修改起来费时费力。</p>
+<h2 id="相关名词"><a href="#相关名词" class="headerlink" title="相关名词"></a>相关名词</h2><ul>
+<li>视图逻辑<br>比如界面想显示年龄但在后台获取到是数据是出生年月日，则视图逻辑就要对日期做相应的转换并显示出年龄。</li>
+<li>业务逻辑<br>对数据的一系列操纵，如查询数据列表、增加数据、修改数据、删除数据。</li>
+</ul>
+<h2 id="三层的分工"><a href="#三层的分工" class="headerlink" title="三层的分工"></a>三层的分工</h2><ul>
+<li>Model: 即数据层, 负责处理业务逻辑, 监听网络与数据库接口.</li>
+<li>View: 即界面 ( UI ) 层, 显示来源于 Model 的数据.</li>
+<li>Contoller: 即逻辑层, 传递用户的交互和更新 Model 的数据.</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-5eded85f45f2c565.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>根据 MVC 架构,  视图层和逻辑层都会依赖于数据层, 视图层显示模型层的数据,  逻辑层更新数据层数据。数据层从项目中分离后, 独立于 UI , 允许测试. 更新数据层方式的不同, 把 MVC 架构分为被动 ( Passive ) 模式和主动 ( Active ) 模式.</p>
+<h2 id="被动模式"><a href="#被动模式" class="headerlink" title="被动模式"></a>被动模式</h2><p>在被动模式中,  逻辑层是唯一操作数据层的类。基于用户的响应事件, 逻辑层通知数据层更新数据。在数据层更新后, 逻辑层通知视图层更新 UI , 视图层从数据层中获取数据。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-7060cda46449e8b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="主动模式"><a href="#主动模式" class="headerlink" title="主动模式"></a>主动模式</h2><p>在主动模式中, 逻辑层不是唯一操作数据层的类, 数据层存在自更新机制。在更新数据时, 数据层层使用观察者 ( Observer ) 模式通知视图层和其他类. 视图层实现观察者的接口, 在数据层中, 注册成为观察者, 接收通知。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-8bf822e7b0f5b012.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>当数据层发生数据更新时, 告知全部观察者。视图层从数据层中更新数据。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-a6c820e5d6e94dbc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>在被动模式中, 视图层继承基类 BaseView , 逻辑层拥有 BaseView 的引用, 更新数据;<br>在主动模式中, 数据层使用观察者通知视图层, 更新数据。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>MVC 模式, 分离类的 UI 与业务职责, 增加可测试性与可扩展性.  数据层不引用任何 Android 类, 允许单元测试 ( Unit Test ) 。逻辑层含有视图层的引用, 不引用 Android 类, 允许单元测试. 视图层满足单一职责原则 ( SRP ) , 传递事件至逻辑层, 展示数据层数据, 不包含业务逻辑, 允许UI测试。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>视图层既依赖于逻辑层又依赖于数据层. 在修改 UI 逻辑时, 也需要修改数据层, 降低架构的灵活性. 视图层与数据层的职责部分重叠, 过于耦合, 在处理 UI 逻辑时, 被动模式与主动模式都会产生若干问题.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjp6mp6ij0002xgf0r5l95upt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-Android-ConstraintLayout" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -137,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjp2mbop10000xgf0bex2lr6x" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjp6mp6i40000xgf00vssb9sb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -218,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjp2mbop80003xgf0ev59v4lf" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjp6mp6ij0001xgf0nhhz6wn7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -272,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjp2mbop50001xgf0r88s90u6" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjp6mp6jf0003xgf0us2648u1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -317,7 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjp2mbop70002xgf0a19o6ior" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjp6mp6ju0004xgf0fgcxiq64" class="article-share-link">Share</a>
       
       
     </footer>
@@ -342,9 +399,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archieven</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
     </div>
   </div>
 
@@ -352,9 +409,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recente berichten</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/12/02/Android-中的-MVC/">Android 中的 MVC</a>
+          </li>
         
           <li>
             <a href="/2018/11/29/Android-ConstraintLayout/">Android ConstraintLayout</a>
