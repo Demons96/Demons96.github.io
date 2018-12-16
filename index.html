@@ -133,7 +133,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/16/Android-SVG/" data-id="cjpr0c3gf0001f8f0lfyomzi2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/16/Android-SVG/" data-id="cjpr0qg440002iwf03m8zbcw5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -233,7 +233,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/Android-单元测试/" data-id="cjpr0c3gk0004f8f0q2omoqsw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/09/Android-单元测试/" data-id="cjpr0qg470004iwf0pdxfqfxu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -290,7 +290,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjpr0c3gj0003f8f03dx01xnj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjpr0qg450003iwf06oyy300o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -376,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjpr0c3g90000f8f0az4ofc63" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjpr0qg3x0000iwf0ko9s0pb4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -457,7 +457,157 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjpr0c3gh0002f8f0572suxsp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjpr0qg420001iwf0hpj2w3vk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android-生命周期" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/18/Android-生命周期/" class="article-date">
+  <time datetime="2018-11-18T15:00:34.000Z" itemprop="datePublished">2018-11-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/18/Android-生命周期/">Android 生命周期</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第一章-进阶基础"><a href="#第一章-进阶基础" class="headerlink" title="第一章 进阶基础"></a>第一章 进阶基础</h1><h2 id="生命周期的各种状态"><a href="#生命周期的各种状态" class="headerlink" title="生命周期的各种状态"></a>生命周期的各种状态</h2><blockquote>
+<p>onCreate:创建<br>onStart:启动，可视不可交互<br>onResume:恢复，可视可交互<br>onPause:暂停，不可交互<br>onStop:停止<br>onDestroy:销毁</p>
+</blockquote>
+<ul>
+<li><p>完整的生命周期：<br>onCreate~onDestroy之间</p>
+</li>
+<li><p>可视的生命周期<br>onStart~onStop之间</p>
+</li>
+<li><p>前台生命周期<br>onResume~onPause之间</p>
+</li>
+<li><p>三类特殊的生命周期<br>onRestart：初次创建时不会调用，当界面从Activity的栈内调制到栈顶的时候调用。<br>onSaveInstanceState：用于存储Activity的状态信息<br>onRestoreInstanceState：用于恢复Activity的状态信息，仅用于系统导致的页面重建</p>
+</li>
+</ul>
+<h2 id="因硬件导致的生命周期变化"><a href="#因硬件导致的生命周期变化" class="headerlink" title="因硬件导致的生命周期变化"></a>因硬件导致的生命周期变化</h2><ul>
+<li><p>完整的启动顺序<br>onCreate-&gt;onRestart-&gt;onStart-&gt;onRestoreInstanceState-&gt;onResume<br>其中onRestart和onRestoreInstanceState不是每个生命周期都会调用的</p>
+</li>
+<li><p>完整的关闭顺序<br>onPause-&gt;onSaveInstanceState-&gt;onStop-&gt;onDestroy<br>其中onSaveInstanceState不是每个生命周期都会调用的，只有界面完全不可视的时候调用。</p>
+</li>
+<li><p>初次启动<br>onCreate-&gt;onStart-&gt;onResume</p>
+</li>
+<li><p>按后退键退出时<br>onPause-&gt;onStop-&gt;onDestroy</p>
+</li>
+<li><p>按菜单键后退<br>onPause-&gt;onSaveInstanceState-&gt;onStop</p>
+</li>
+<li><p>按菜单键退回后再次点开应用时<br>onRestart-&gt;onStart-&gt;onResume</p>
+</li>
+</ul>
+<h2 id="界面切换时的生命周期变化"><a href="#界面切换时的生命周期变化" class="headerlink" title="界面切换时的生命周期变化"></a>界面切换时的生命周期变化</h2><p>A执行onPause之后B界面才能执行启动逻辑<br>所以onPause不能执行费时的启动逻辑</p>
+<ul>
+<li><p>A启动非透明的B时的周期变化（B只提示onCreate）<br>A:onPause<br>B:onCreate<br>A:onSaveInstanceState<br>A:onStop<br>(ps:onSaveInstanceState在界面关闭的时候都会执行，但非系统原因的关闭不会执行onRestoreInstanceState方法)</p>
+</li>
+<li><p>关闭B界面重新返回A界面时<br>B:onPause<br>A:onRestart<br>A:onStart<br>A:onResume<br>B:onStop<br>B:onDestroy</p>
+</li>
+<li><p>A启动透明的T的周期变化<br>A:onPause</p>
+</li>
+<li><p>关闭透明的T重新恢复A的周期变化<br>T:onPause<br>A:onResume<br>T:onStop<br>T:onDestroy</p>
+</li>
+</ul>
+<h2 id="系统原因导致的周期变化"><a href="#系统原因导致的周期变化" class="headerlink" title="系统原因导致的周期变化"></a>系统原因导致的周期变化</h2><p>旋转手机时活动的周期变化<br>onPause<br>onSaveInstanceState<br>onStop<br>onDestroy<br>onCreate<br>onStart<br>onRestoreInstanceState<br>onResume</p>
+<p>在AndroidManifest中的Activity属性中加上android:configChanges=”orientation|screenSize防止在旋转的时候重绘<br>在AndroidManifest中的Activity属性中加上android:configChanges=”portrait”保持屏幕坚直的状态</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/18/Android-生命周期/" data-id="cjpr0qg490006iwf0kqmed6iy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android-启动模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/11/Android-启动模式/" class="article-date">
+  <time datetime="2018-11-11T14:59:15.000Z" itemprop="datePublished">2018-11-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/11/Android-启动模式/">Android 启动模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>安卓中全部的Activity都会存储在Activity栈中，每创建一个界面都会向栈中添加，每次销毁一个界面都会从栈中弹出。这样频繁的创建与销毁会给系统带来很大的开销。为了实现Activity的复用，Android系统提供了启动模式，主要分为以下四种。</p>
+<h2 id="复用的生命周期"><a href="#复用的生命周期" class="headerlink" title="复用的生命周期"></a>复用的生命周期</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onNewIntent()-&gt;onResme()</span><br></pre></td></tr></table></figure>
+<h2 id="Standard-标准模式（默认）"><a href="#Standard-标准模式（默认）" class="headerlink" title="Standard:标准模式（默认）"></a>Standard:标准模式（默认）</h2><p>每次启动都会创建新的Activity实例,以下是MainActivity创建TestAActivity的生命周期<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">MainActivity: onCreate</span><br><span class="line">MainActivity: onStart</span><br><span class="line">MainActivity: onResume</span><br><span class="line">MainActivity: onPause</span><br><span class="line">TestAActivity: onCreate</span><br><span class="line">TestAActivity: onStart</span><br><span class="line">TestAActivity: onResume</span><br><span class="line">MainActivity: onStop</span><br></pre></td></tr></table></figure></p>
+<h2 id="SingleTop-栈顶复用模式"><a href="#SingleTop-栈顶复用模式" class="headerlink" title="SingleTop:栈顶复用模式"></a>SingleTop:栈顶复用模式</h2><p>只有当Activity位于栈顶时，再次启动当前的Activity会复用栈顶的Activity实例，<br>如果位于栈内则与标准模式相同。<br>设置TestBActivity为栈顶复用模式，使用TextAActivity启动TextBActivity，然后再次启动TextBActivity时的生命周期。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">TestAActivity: onPause</span><br><span class="line">TestBActivity: onCreate</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestAActivity: onStop</span><br><span class="line">TestBActivity: onPause</span><br><span class="line">TestBActivity: onNewIntent</span><br><span class="line">TestBActivity: onResume</span><br></pre></td></tr></table></figure></p>
+<h2 id="SingleTask-栈内复用模式"><a href="#SingleTask-栈内复用模式" class="headerlink" title="SingleTask:栈内复用模式"></a>SingleTask:栈内复用模式</h2><p>只要栈中存在栈内复用模式的activity，无论实在栈顶还是在栈内，多次调用都会复用实例。<br>栈内复用分为几种情况，</p>
+<ol>
+<li><p>未设置taskAffinity属性<br>当栈内复用模式的activity位于栈顶时与栈顶复用模式相同，当其位于栈内中时实例将其上面的全部activity做出栈操作，此时该activity位于栈顶。<br>设置TestBActivity为栈内复用模式，启动顺序TextAActivity-&gt;TextBActivity-&gt;TextCActivity-&gt;TextBActivity时的生命周期。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">TestAActivity: onPause</span><br><span class="line">TestBActivity: onCreate</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestAActivity: onStop</span><br><span class="line">TestBActivity: onPause</span><br><span class="line">TestCActivity: onCreate</span><br><span class="line">TestCActivity: onStart</span><br><span class="line">TestCActivity: onResume</span><br><span class="line">TestBActivity: onStop</span><br><span class="line">TestCActivity: onPause</span><br><span class="line">TestBActivity: onNewIntent</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestCActivity: onStop</span><br><span class="line">TestCActivity: onDestroy</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置taskAffinity属性（在栈顶复用模式和标准模式中无效）<br>任务栈不同，当taskAffinity所指定的任务栈不存在时，初次启动栈内复用模式的实例会创建新的任务栈，并将实例放置其中。<br>启动顺序TextAActivity-&gt;TextBActivity-&gt;TextCActivity-&gt;TextBActivity时的生命周期。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">TestAActivity: onPause</span><br><span class="line">TestBActivity: onCreate</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestAActivity: onStop</span><br><span class="line">TestBActivity: onPause</span><br><span class="line">TestCActivity: onCreate</span><br><span class="line">TestCActivity: onStart</span><br><span class="line">TestCActivity: onResume</span><br><span class="line">TestBActivity: onStop</span><br><span class="line">TestCActivity: onPause</span><br><span class="line">TestBActivity: onNewIntent</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestCActivity: onStop</span><br><span class="line">TestCActivity: onDestroy</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>虽然正常启动的情况下生命周期与第一种情况的相同，但是A启动B，B再启动C时，B和C所位于的任务栈是taskAffinity所指定的任务栈，而A使用的时默认的任务栈。当任务栈不同时启动不同栈内的实例会发生任务栈之间的切换，后台任务栈会位于前台，但如果此时按下手机的home键之后再次启动应用时启动的就是默认的任务栈，而不是原有的任务栈，上面的情况C就不会位于栈顶，而是A位于栈顶。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">TestAActivity: onCreate</span><br><span class="line">TestAActivity: onStart</span><br><span class="line">TestAActivity: onResume</span><br><span class="line">MainActivity: onStop</span><br><span class="line">TestAActivity: onPause</span><br><span class="line">TestBActivity: onCreate</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestAActivity: onStop</span><br><span class="line">TestBActivity: onPause</span><br><span class="line">TestCActivity: onCreate</span><br><span class="line">TestCActivity: onStart</span><br><span class="line">TestCActivity: onResume</span><br><span class="line">TestBActivity: onStop</span><br><span class="line">TestCActivity: onPause</span><br><span class="line">TestCActivity: onStop</span><br><span class="line">TestAActivity: onStart</span><br><span class="line">TestAActivity: onResume</span><br></pre></td></tr></table></figure></p>
+<h2 id="SingleInstance-单实例模式"><a href="#SingleInstance-单实例模式" class="headerlink" title="SingleInstance:单实例模式"></a>SingleInstance:单实例模式</h2><p>启动单实例的activity时系统会为其创建一个单独的任务栈，以后每次使用时都会使用这个单利，直到其被销毁，与栈内复用设置taskAffinity不同，栈内复用所指定的任务栈不能独享，会被其他activity使用，二单实例模式所创建的任务栈只包含有一个实例。<br>启动顺序TextAActivity-&gt;TextBActivity-&gt;TextCActivity时的生命周期。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">TestAActivity: onPause</span><br><span class="line">TestBActivity: onCreate</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestAActivity: onStop</span><br><span class="line">TestBActivity: onPause</span><br><span class="line">TestCActivity: onCreate</span><br><span class="line">TestCActivity: onStart</span><br><span class="line">TestCActivity: onResume</span><br><span class="line">TestBActivity: onStop</span><br></pre></td></tr></table></figure></p>
+<p>之后分两种情况</p>
+<ol>
+<li><p>关闭C之后一直按返回<br>优先出栈当前任务栈的全部实例，再出栈第二层任务栈的全部实例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">TestCActivity: onPause</span><br><span class="line">TestAActivity: onStart</span><br><span class="line">TestAActivity: onResume</span><br><span class="line">TestCActivity: onStop</span><br><span class="line">TestCActivity: onDestroy</span><br><span class="line">TestAActivity: onPause</span><br><span class="line">MainActivity: onStart</span><br><span class="line">MainActivity: onResume</span><br><span class="line">TestAActivity: onStop</span><br><span class="line">TestAActivity: onDestroy</span><br><span class="line">MainActivity: onPause</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">MainActivity: onStop</span><br><span class="line">MainActivity: onDestroy</span><br><span class="line">TestBActivity: onPause</span><br><span class="line">TestBActivity: onStop</span><br><span class="line">TestBActivity: onDestroy</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C再次启动B<br>B位于栈顶，接着才是任务栈中的MainActivity、TestAActivity、TextBActivity</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TestCActivity: onPause</span><br><span class="line">TestBActivity: onNewIntent</span><br><span class="line">TestBActivity: onStart</span><br><span class="line">TestBActivity: onResume</span><br><span class="line">TestCActivity: onStop</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="设置启动模式"><a href="#设置启动模式" class="headerlink" title="设置启动模式"></a>设置启动模式</h2><blockquote>
+<p>launchMode：设置启动模式。<br>taskAffinity：设置Activity栈，默认为当前包名。</p>
+</blockquote>
+<ul>
+<li>在java代码中设置<blockquote>
+<p>启动Activity的基础命令是startActivity()，参数是Intent。<br>创建Intent需要content类与activity的class类。<br>被启动的activity运行在启动的activity栈内。<br>因此启动activity的intent中的content参数必须是用activity的，而不是用application的，因为后者不包含activity栈。<br>例如：startActivity(new Intent(MainActivity.this, MainActivity.class));</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 栈顶复用</span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);</span><br><span class="line">// 栈内复用</span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">// 如果是栈内复用，会清楚栈上其他的实例</span><br><span class="line">// 如果是标准模式则会清楚自己和其他实例后再重新创建</span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在AndroidManifest中设置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity</span><br><span class="line">    android:name=&quot;.Activity&quot;</span><br><span class="line">    android:launchMode=&quot;启动模式&quot;</span><br><span class="line">    android:taskAffinity=&quot;包名&quot;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/11/Android-启动模式/" data-id="cjpr0qg480005iwf0uq45vo8z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -511,7 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjpr0c3gl0005f8f0s4aovbww" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjpr0qg4a0007iwf0sy1uljxl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -556,7 +706,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjpr0c3gn0006f8f05sjuk9oe" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjpr0qg4c0008iwf03f0lnk5k" class="article-share-link">Share</a>
       
       
     </footer>
