@@ -61,6 +61,75 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-OkHttp-Interceptor" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/30/OkHttp-Interceptor/" class="article-date">
+  <time datetime="2018-12-30T12:20:47.000Z" itemprop="datePublished">2018-12-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/30/OkHttp-Interceptor/">OkHttp Interceptor</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="拦截器的作用"><a href="#拦截器的作用" class="headerlink" title="拦截器的作用"></a>拦截器的作用</h2><p>拦截器可以拿到网络请求的 Request 对象和 Response 对象，有了这两个对象我们就可以对网络请求进行监听（打印日志）、缓存、修改 HTTP 的请求报文和响应报文。</p>
+<h2 id="如何使用拦截器"><a href="#如何使用拦截器" class="headerlink" title="如何使用拦截器"></a>如何使用拦截器</h2><ol>
+<li>实现 <code>Interceptor</code> 接口，重写 <code>intercept()</code> 函数获取并返回响应 <code>Response</code> 的对象。下面是一个日志打印的例子。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class TestInterceptor implements Interceptor &#123;</span><br><span class="line">    private static final String TAG = &quot;TestInterceptor&quot;;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Response intercept(Chain chain) throws IOException &#123;</span><br><span class="line">        Log.d(TAG, &quot;拦截器开始&quot;);</span><br><span class="line">        // 获取请求对象</span><br><span class="line">        Request request = chain.request();</span><br><span class="line"></span><br><span class="line">        long t1 = System.nanoTime();</span><br><span class="line">        Log.d(TAG, String.format(&quot;Sending request %s on %s%n%s&quot;,</span><br><span class="line">                request.url(), chain.connection(), request.headers()));</span><br><span class="line"></span><br><span class="line">        // 发起HTTP请求，并获取响应对象</span><br><span class="line">        Response response = chain.proceed(request);</span><br><span class="line"></span><br><span class="line">        long t2 = System.nanoTime();</span><br><span class="line">        Log.d(TAG, String.format(&quot;Received response for %s in %.1fms%n%s&quot;,</span><br><span class="line">                response.request().url(), (t2 - t1) / 1e6d, response.headers()));</span><br><span class="line"></span><br><span class="line">        return response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>在建造 <code>OkHttpClient</code> 类的对象时调用 <code>addInterceptor()</code> 或 <code>addNetworkInterceptor()</code> 方法设置拦截器，下面的例子先使用 <code>addInterceptor()</code> 。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public void httpGetClick(View view) &#123;</span><br><span class="line">    String url = &quot;https://publicobject.com/helloworld.txt&quot;;</span><br><span class="line"></span><br><span class="line">    OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">            .addInterceptor(new TestInterceptor())</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    final Request request = new Request.Builder()</span><br><span class="line">            .url(url)</span><br><span class="line">            .get() </span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    Call call = okHttpClient.newCall(request);</span><br><span class="line">    call.enqueue(new Callback() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void onFailure(Call call, IOException e) &#123;</span><br><span class="line">            showData(&quot;onFailure: &quot; + e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void onResponse(Call call, final Response response) throws IOException &#123;</span><br><span class="line">            String responseStr = (response.body() == null) ? &quot;返回结果为空&quot; : response.body().string();</span><br><span class="line">            showData(responseStr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-3cdb5c36d34b2990.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="addInterceptor-和-addNetworkInterceptor-的区别"><a href="#addInterceptor-和-addNetworkInterceptor-的区别" class="headerlink" title="addInterceptor 和 addNetworkInterceptor 的区别"></a>addInterceptor 和 addNetworkInterceptor 的区别</h2><ol>
+<li><strong>Application Interceptors</strong></li>
+</ol>
+<ul>
+<li>使用 <code>addInterceptor()</code> 注册</li>
+<li>有无网络都会被调用到</li>
+<li><code>application</code> 拦截器只会被调用一次，调用 <code>chain.proceed()</code> 得到的是重定向之后最终的响应信息，不会通过 <code>chain.connection()</code> 获得中间过程的响应信息</li>
+<li>允许 <em>short-circuit (短路)</em> 并且允许不去调用 <code>chain.proceed()</code> 请求服务器数据，可通过缓存来返回数据。</li>
+</ul>
+<ol>
+<li><strong>Network Interceptors</strong></li>
+</ol>
+<ul>
+<li>使用 <code>addNetworkInterceptor()</code> 注册</li>
+<li>无网络时不会被调用</li>
+<li>可以显示更多的信息，比如 OkHttp 为了减少数据的传输时间以及传输流量而自动添加的请求头 <em>Accept-Encoding: gzip</em> 希望服务器能返回经过压缩过的响应数据。</li>
+<li><code>chain.connection()</code> 返回不为空的 <code>Connection</code> 对象可以查询到客户端所连接的服务器的IP地址以及TLS配置信息。</li>
+</ul>
+<p>以下是使用 <code>Network Interceptors</code> 的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addNetworkInterceptor(new TestInterceptor())</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line">final Request request = new Request.Builder()</span><br><span class="line">        .url(url)</span><br><span class="line">        .header(&quot;User-Agent&quot;, &quot;OkHttp Example&quot;)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-bcdc32b715507b5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-58d49684e05dd865.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="调用的顺序"><a href="#调用的顺序" class="headerlink" title="调用的顺序"></a>调用的顺序</h2><p>OkHttp 利用 List 集合去跟踪并且保存这些拦截器，并且会依次遍历调用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addInterceptor(new TestInterceptor1())</span><br><span class="line">        .addInterceptor(new TestInterceptor2())</span><br><span class="line">        .addInterceptor(new TestInterceptor())</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D/TestInterceptor: 拦截器1开始</span><br><span class="line">D/TestInterceptor: 拦截器2开始</span><br><span class="line">D/TestInterceptor: 拦截器开始</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/30/OkHttp-Interceptor/" data-id="cjqav6ib60005dwf0jg5cfqpz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Android-SVG" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/12/16/Android-SVG/" class="article-date">
@@ -133,7 +202,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/16/Android-SVG/" data-id="cjpr0qg440002iwf03m8zbcw5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/16/Android-SVG/" data-id="cjqav6iaz0001dwf0ziw8exsz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -233,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/Android-单元测试/" data-id="cjpr0qg470004iwf0pdxfqfxu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/09/Android-单元测试/" data-id="cjqav6ic30007dwf0cp7s2oek" class="article-share-link">Share</a>
       
       
     </footer>
@@ -290,7 +359,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjpr0qg450003iwf06oyy300o" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjqav6iaq0000dwf05u1twoti" class="article-share-link">Share</a>
       
       
     </footer>
@@ -376,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjpr0qg3x0000iwf0ko9s0pb4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjqav6ib20002dwf0t2pna7tl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -457,7 +526,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjpr0qg420001iwf0hpj2w3vk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjqav6ib50004dwf0fa5h7t0w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -533,7 +602,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/18/Android-生命周期/" data-id="cjpr0qg490006iwf0kqmed6iy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/18/Android-生命周期/" data-id="cjqav6ic40008dwf0aat9gg7g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -607,7 +676,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/11/Android-启动模式/" data-id="cjpr0qg480005iwf0uq45vo8z" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/11/Android-启动模式/" data-id="cjqav6ib30003dwf08xeryaik" class="article-share-link">Share</a>
       
       
     </footer>
@@ -661,7 +730,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjpr0qg4a0007iwf0sy1uljxl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjqav6ib80006dwf01s23thrg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -706,7 +775,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjpr0qg4c0008iwf03f0lnk5k" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjqav6ic90009dwf0juj8ltmr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -746,6 +815,10 @@
       <ul>
         
           <li>
+            <a href="/2018/12/30/OkHttp-Interceptor/">OkHttp Interceptor</a>
+          </li>
+        
+          <li>
             <a href="/2018/12/16/Android-SVG/">Android SVG</a>
           </li>
         
@@ -759,10 +832,6 @@
         
           <li>
             <a href="/2018/11/29/Android-ConstraintLayout/">Android ConstraintLayout</a>
-          </li>
-        
-          <li>
-            <a href="/2018/11/29/Android-CoordinatorLayout/">Android CoordinatorLayout</a>
           </li>
         
       </ul>
