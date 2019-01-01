@@ -48,9 +48,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -83,44 +83,108 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="拦截器的作用"><a href="#拦截器的作用" class="headerlink" title="拦截器的作用"></a>拦截器的作用</h2><p>拦截器可以拿到网络请求的 Request 对象和 Response 对象，有了这两个对象我们就可以对网络请求进行监听（打印日志）、缓存、修改 HTTP 的请求报文和响应报文。</p>
-<h2 id="如何使用拦截器"><a href="#如何使用拦截器" class="headerlink" title="如何使用拦截器"></a>如何使用拦截器</h2><ol>
-<li>实现 <code>Interceptor</code> 接口，重写 <code>intercept()</code> 函数获取并返回响应 <code>Response</code> 的对象。下面是一个日志打印的例子。</li>
-</ol>
+        <h2 id="一、拦截器的作用"><a href="#一、拦截器的作用" class="headerlink" title="一、拦截器的作用"></a>一、拦截器的作用</h2><p>拦截器可以拿到网络请求的 Request 对象和 Response 对象，有了这两个对象我们就可以对网络请求进行监听（打印日志）、缓存、修改 HTTP 的请求报文和响应报文。</p>
+<h2 id="二、如何使用拦截器"><a href="#二、如何使用拦截器" class="headerlink" title="二、如何使用拦截器"></a>二、如何使用拦截器</h2><p>1.实现 <code>Interceptor</code> 接口，重写 <code>intercept()</code> 函数获取并返回响应 <code>Response</code> 的对象。下面是一个日志打印的例子。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class TestInterceptor implements Interceptor &#123;</span><br><span class="line">    private static final String TAG = &quot;TestInterceptor&quot;;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Response intercept(Chain chain) throws IOException &#123;</span><br><span class="line">        Log.d(TAG, &quot;拦截器开始&quot;);</span><br><span class="line">        // 获取请求对象</span><br><span class="line">        Request request = chain.request();</span><br><span class="line"></span><br><span class="line">        long t1 = System.nanoTime();</span><br><span class="line">        Log.d(TAG, String.format(&quot;Sending request %s on %s%n%s&quot;,</span><br><span class="line">                request.url(), chain.connection(), request.headers()));</span><br><span class="line"></span><br><span class="line">        // 发起HTTP请求，并获取响应对象</span><br><span class="line">        Response response = chain.proceed(request);</span><br><span class="line"></span><br><span class="line">        long t2 = System.nanoTime();</span><br><span class="line">        Log.d(TAG, String.format(&quot;Received response for %s in %.1fms%n%s&quot;,</span><br><span class="line">                response.request().url(), (t2 - t1) / 1e6d, response.headers()));</span><br><span class="line"></span><br><span class="line">        return response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li>在建造 <code>OkHttpClient</code> 类的对象时调用 <code>addInterceptor()</code> 或 <code>addNetworkInterceptor()</code> 方法设置拦截器，下面的例子先使用 <code>addInterceptor()</code> 。</li>
-</ol>
+<p>2.在建造 <code>OkHttpClient</code> 类的对象时调用 <code>addInterceptor()</code> 或 <code>addNetworkInterceptor()</code> 方法设置拦截器，下面的例子先使用 <code>addInterceptor()</code> 。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public void httpGetClick(View view) &#123;</span><br><span class="line">    String url = &quot;https://publicobject.com/helloworld.txt&quot;;</span><br><span class="line"></span><br><span class="line">    OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">            .addInterceptor(new TestInterceptor())</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    final Request request = new Request.Builder()</span><br><span class="line">            .url(url)</span><br><span class="line">            .get() </span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    Call call = okHttpClient.newCall(request);</span><br><span class="line">    call.enqueue(new Callback() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void onFailure(Call call, IOException e) &#123;</span><br><span class="line">            showData(&quot;onFailure: &quot; + e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void onResponse(Call call, final Response response) throws IOException &#123;</span><br><span class="line">            String responseStr = (response.body() == null) ? &quot;返回结果为空&quot; : response.body().string();</span><br><span class="line">            showData(responseStr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><img src="https://upload-images.jianshu.io/upload_images/3304008-3cdb5c36d34b2990.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<h2 id="addInterceptor-和-addNetworkInterceptor-的区别"><a href="#addInterceptor-和-addNetworkInterceptor-的区别" class="headerlink" title="addInterceptor 和 addNetworkInterceptor 的区别"></a>addInterceptor 和 addNetworkInterceptor 的区别</h2><ol>
-<li><strong>Application Interceptors</strong></li>
-</ol>
+<h2 id="三、addInterceptor-和-addNetworkInterceptor-的区别"><a href="#三、addInterceptor-和-addNetworkInterceptor-的区别" class="headerlink" title="三、addInterceptor 和 addNetworkInterceptor 的区别"></a>三、addInterceptor 和 addNetworkInterceptor 的区别</h2><p>1.<strong>Application Interceptors</strong></p>
 <ul>
 <li>使用 <code>addInterceptor()</code> 注册</li>
 <li>有无网络都会被调用到</li>
 <li><code>application</code> 拦截器只会被调用一次，调用 <code>chain.proceed()</code> 得到的是重定向之后最终的响应信息，不会通过 <code>chain.connection()</code> 获得中间过程的响应信息</li>
 <li>允许 <em>short-circuit (短路)</em> 并且允许不去调用 <code>chain.proceed()</code> 请求服务器数据，可通过缓存来返回数据。</li>
 </ul>
-<ol>
-<li><strong>Network Interceptors</strong></li>
-</ol>
+<p>2.<strong>Network Interceptors</strong></p>
 <ul>
 <li>使用 <code>addNetworkInterceptor()</code> 注册</li>
 <li>无网络时不会被调用</li>
 <li>可以显示更多的信息，比如 OkHttp 为了减少数据的传输时间以及传输流量而自动添加的请求头 <em>Accept-Encoding: gzip</em> 希望服务器能返回经过压缩过的响应数据。</li>
 <li><code>chain.connection()</code> 返回不为空的 <code>Connection</code> 对象可以查询到客户端所连接的服务器的IP地址以及TLS配置信息。</li>
 </ul>
-<p>以下是使用 <code>Network Interceptors</code> 的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addNetworkInterceptor(new TestInterceptor())</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line">final Request request = new Request.Builder()</span><br><span class="line">        .url(url)</span><br><span class="line">        .header(&quot;User-Agent&quot;, &quot;OkHttp Example&quot;)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure></p>
+<p>以下是使用 <code>Network Interceptors</code> 的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addNetworkInterceptor(new TestInterceptor())</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line">final Request request = new Request.Builder()</span><br><span class="line">        .url(url)</span><br><span class="line">        .header(&quot;User-Agent&quot;, &quot;OkHttp Example&quot;)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
 <p><img src="https://upload-images.jianshu.io/upload_images/3304008-bcdc32b715507b5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="四、拦截器的调用的顺序"><a href="#四、拦截器的调用的顺序" class="headerlink" title="四、拦截器的调用的顺序"></a>四、拦截器的调用的顺序</h2><p>1.OkHttp 利用 List 集合去跟踪并且保存这些拦截器，并且会依次遍历调用。调用顺序是先按 <code>addInterceptor()</code> 设置的顺序遍历，再按 <code>addNetworkInterceptor()</code> 设置的顺序遍历，返回的结果则是反着来，这里看官方文档的图会直观一些。</p>
 <p><img src="https://upload-images.jianshu.io/upload_images/3304008-58d49684e05dd865.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<h2 id="调用的顺序"><a href="#调用的顺序" class="headerlink" title="调用的顺序"></a>调用的顺序</h2><p>OkHttp 利用 List 集合去跟踪并且保存这些拦截器，并且会依次遍历调用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addInterceptor(new TestInterceptor1())</span><br><span class="line">        .addInterceptor(new TestInterceptor2())</span><br><span class="line">        .addInterceptor(new TestInterceptor())</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D/TestInterceptor: 拦截器1开始</span><br><span class="line">D/TestInterceptor: 拦截器2开始</span><br><span class="line">D/TestInterceptor: 拦截器开始</span><br></pre></td></tr></table></figure>
+<p>2.调用顺序实践代码</p>
+<blockquote>
+<p>需注意的是使用 <code>addNetworkInterceptor()</code> 设置的 <code>Network Interceptors</code> 在请求发生重定向时会调用两次。</p>
+</blockquote>
+<p>这里设置的 <code>OfflineCacheInterceptor</code>、<code>NetCacheInterceptor</code>、<code>LoggingInterceptor</code> 分别是<strong>无网缓存拦截器</strong>、<strong>日志拦截器</strong>、<strong>有网缓存拦截器</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addInterceptor(new OfflineCacheInterceptor())</span><br><span class="line">        .addNetworkInterceptor(new NetCacheInterceptor())</span><br><span class="line">        .addInterceptor(new LoggingInterceptor())</span><br><span class="line">        .cache(cache)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">无网缓存拦截器: 开始</span><br><span class="line">日志拦截器: 开始</span><br><span class="line">有网缓存拦截器: 开始</span><br><span class="line">有网缓存拦截器: 结束</span><br><span class="line">有网缓存拦截器: 开始</span><br><span class="line">有网缓存拦截器: 结束</span><br><span class="line">日志拦截器: 结束</span><br><span class="line">无网缓存拦截器: 结束</span><br></pre></td></tr></table></figure>
+<p>3.调用顺序总结：由以上代码运行结果可知。</p>
+<ul>
+<li>应该先设置完 <code>Application Interceptors</code> 再去设置 <code>Network Interceptors</code> 混着设置不便于代码阅读。</li>
+<li><strong>日志拦截器</strong>的最佳位置是设置在 <code>addInterceptor()</code> 的第一个,这个位置的拦截器可以拿到最原始的请求信息以及最终的响应信息。</li>
+<li>无网的缓存逻辑应使用 <code>addInterceptor()</code> 设置</li>
+<li>有网的缓存逻辑应使用 <code>addNetworkInterceptor()</code> 设置</li>
+</ul>
+<h2 id="五、拦截器进阶之-网络缓存"><a href="#五、拦截器进阶之-网络缓存" class="headerlink" title="五、拦截器进阶之-网络缓存"></a>五、拦截器进阶之-网络缓存</h2><p>在创建 OkHttpClient 对象的时候是可以设置 Cache 对象以实现缓存的，但这个方法是需要服务器返回的响应报文里面含有 Cache-Control 信息的，如果服务器未设置该值则需要我们自己去增加该信息，以下是服务器不支持缓存的情况下又想实现的需求。</p>
+<p>1.项目需求</p>
+<ul>
+<li>有网状态下的缓存过期时间可控。如设置为6秒可防止用户暴力刷新以减轻服务器压力，也可设置为更小的值以保证数据的实时性。</li>
+<li>无网状态下的缓存过期时间可控。如设置为一天，或者永久(Integer.MAX_VALUE，21亿秒左右)<br>和无网状态下缓存的时间不一样，例如有网的时候10秒内读取缓存数据，无网的时候则长期读取缓存数据。</li>
+<li>可以缓存 get 和 post 请求</li>
+</ul>
+<blockquote>
+<p>注意： OkHttp 默认只支持 Get 请求缓存。</p>
+</blockquote>
+<p>2.前置知识-HTTP消息报头</p>
+<ul>
+<li>Expires 首部<br>HTTP/1.0+ 时服务器用来指定过期日期的首部，其使用的是<strong>绝对日期</strong>。现在更常用的是使用 HTTP/1.1 的 <strong>Cache-Control</strong> 首部代替，其使用的是<strong>相对日期</strong>。</li>
+<li>Pragma 首部<br>用来包含实现特定的指令，最常用的是 <strong>Pragma:no-cache</strong>。在 HTTP/1.1 协议中，它的含义和 <strong>Cache-Control:no-cache</strong> 相同。</li>
+<li>Cache-Control 首部<br>位于通用报头，用来指定缓存的指令。缓存指令是<strong>单向</strong>的（响应时出现的缓存指令在请求是未必会出现）并且也是<strong>独立</strong>的（一个消息处理的缓存指令不会影响另一个消息处理的缓存机制）。下面是一些会用到的指令。  <ul>
+<li>public : 指示响应可被任何缓存区缓存。</li>
+<li>private : 指示对于单个用户的整个或部分响应消息，不能被共享缓存处理。这允许服务器仅仅描述当前用户的部分响应消息，此响应消息对于其他用户的请求无效。 </li>
+<li>max-age : 定义了<strong>缓存过期时间</strong>（从第一次生成文档到无法使用为止）单位为秒，没有超出则不管怎么样都是返回缓存数据，超出了则发起新的请求获取数据更新，<strong>请求失败返回缓存数据</strong>。</li>
+<li>max-stale : 定义了<strong>强制使用缓存的时间</strong>，单位为秒。没有超过则不管怎么样都返回缓存数据，超过了则发起请求获取更新数据，<strong>请求失败返回失败</strong> （response.code() 为 504）。</li>
+<li>only-if-cached : 只使用缓存</li>
+<li>no-cache : 指示请求或响应消息不能缓存 </li>
+<li>no-store : 用于防止重要的信息被无意的发布。在请求消息中发送将使得请求和响应消息都不使用缓存。 </li>
+</ul>
+</li>
+</ul>
+<p>3.定义无网请求的拦截器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class OfflineCacheInterceptor implements Interceptor &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Response intercept(Chain chain) throws IOException &#123;</span><br><span class="line">        Request request = chain.request();</span><br><span class="line"></span><br><span class="line">        String method = request.method();</span><br><span class="line">        if (!NetState.isNetworkConnected(MyApplication.getContext())) &#123;</span><br><span class="line">            if (&quot;GET&quot;.equals(method)) &#123;</span><br><span class="line">                // 缓存过期时间,超过时则 response.body().contentLength() 为 0</span><br><span class="line">                int offlineCacheTime = Integer.MAX_VALUE;</span><br><span class="line">                request = request.newBuilder()</span><br><span class="line">                        .header(&quot;Cache-Control&quot;, &quot;public, only-if-cached, max-stale=&quot; + offlineCacheTime)</span><br><span class="line">                        .build();</span><br><span class="line">            &#125; else if (&quot;POST&quot;.equals(method)) &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return chain.proceed(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>okhttp 官方文档建议使用 CacheControl 构造缓存方法，里面也有一些配置好的缓存策略，例如修改上面的代码，使用 <code>cacheControl(CacheControl.FORCE_CACHE)</code> 也可达到无网时强制读取缓存的效果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">request = request.newBuilder()</span><br><span class="line">        .cacheControl(CacheControl.FORCE_CACHE)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-75c1f4b722287604.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>不想使用缓存时也可设置 <code>cacheControl(CacheControl.FORCE_NETWORK)</code></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3304008-76a470b504dad299.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>4.定义有网请求的拦截器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class NetCacheInterceptor implements Interceptor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Response intercept(Chain chain) throws IOException &#123;</span><br><span class="line">        Request request = chain.request();</span><br><span class="line">        Response response = chain.proceed(request);</span><br><span class="line"></span><br><span class="line">        // 在线的时候的缓存过期时间，如果想要不缓存，直接时间设置为0</span><br><span class="line">        int onlineCacheTime = 30;</span><br><span class="line">        return response.newBuilder()</span><br><span class="line">                .removeHeader(&quot;Pragma&quot;)</span><br><span class="line">                .removeHeader(&quot;Cache-Control&quot;)</span><br><span class="line">                .header(&quot;Cache-Control&quot;, &quot;public, max-age=&quot; + onlineCacheTime)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>5.设置拦截器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = new OkHttpClient.Builder()</span><br><span class="line">        .addInterceptor(new LoggingInterceptor())</span><br><span class="line">        .addInterceptor(new OfflineCacheInterceptor())</span><br><span class="line">        .addNetworkInterceptor(new NetCacheInterceptor())</span><br><span class="line">        .cache(cache)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+<p>6.增加对 POST 请求的缓存<br>这里使用比较简单的数据库存储的方法实现，主要思路如下。</p>
+<ul>
+<li>在应用拦截器里取得 POST 请求的地址以及请求体。</li>
+<li>使用请求的地址以及请求体生成一个请求的唯一标识，以区分不同的请求。</li>
+<li>有网状态下查询缓存是否命中，未命中则存入响应信息；命中则判断缓存是否过期，过期则重新存入，未过期则取出。</li>
+<li>无网状态下查询缓存是否命中，未命中则回调错误信息；命中则判断缓存是否过期，过期回调错误信息，未过期则取出。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">public class OfflineCacheInterceptor implements Interceptor &#123;</span><br><span class="line">    private static final CacheControl FORCE_MY_CACHE = new CacheControl.Builder()</span><br><span class="line">            .onlyIfCached()</span><br><span class="line">            .maxStale(InterceptorConfiguration.OFFLINE_CACHE_TIME, TimeUnit.SECONDS)</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Response intercept(Chain chain) throws IOException &#123;</span><br><span class="line">        InterceptorConfiguration.debugLog(&quot;无网缓存拦截器开始&quot;);</span><br><span class="line"></span><br><span class="line">        Request request = chain.request();</span><br><span class="line">        Response response = null;</span><br><span class="line"></span><br><span class="line">        String requestUrl = InterceptorConfiguration.getUrl(request);</span><br><span class="line">        String method = request.method();</span><br><span class="line">        if (!NetState.isNetworkConnected(MyApplication.getContext())) &#123;</span><br><span class="line">            request = request.newBuilder().cacheControl(FORCE_MY_CACHE).build();</span><br><span class="line"></span><br><span class="line">            if (&quot;GET&quot;.equals(method)) &#123;</span><br><span class="line">                response = chain.proceed(request);</span><br><span class="line">            &#125; else if (&quot;POST&quot;.equals(method)) &#123;</span><br><span class="line">                InterceptorConfiguration.debugLog(&quot;读取POST缓存&quot;);</span><br><span class="line">                HttpDbBean httpDbBean = HttpDbBean.getByUrl(requestUrl);</span><br><span class="line">                if (httpDbBean != null &amp;&amp; !TextUtils.isEmpty(httpDbBean.getResponse())) &#123;</span><br><span class="line">                    String b = httpDbBean.getResponse();</span><br><span class="line">                    byte[] bs = b.getBytes();</span><br><span class="line"></span><br><span class="line">                    response = new Response.Builder()</span><br><span class="line">                            .request(request)</span><br><span class="line">                            .body(ResponseBody.create(MediaType.parse(&quot;application/json&quot;), bs))</span><br><span class="line">                            .message(httpDbBean.getMessage())</span><br><span class="line">                            .code(httpDbBean.getCode())</span><br><span class="line">                            .protocol(Protocol.HTTP_1_1)</span><br><span class="line">                            .build();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            response = chain.proceed(request);</span><br><span class="line">            String responseBodyString = InterceptorConfiguration.getResponseBody(response);</span><br><span class="line"></span><br><span class="line">            if (&quot;POST&quot;.equals(method)) &#123;</span><br><span class="line">                // 保存请求信息</span><br><span class="line">                LitePal.deleteAll(HttpDbBean.class, &quot;url = ?&quot;, requestUrl);</span><br><span class="line">                HttpDbBean saveHttpBean = new HttpDbBean(requestUrl, responseBodyString, response.message(), response.code());</span><br><span class="line">                saveHttpBean.save();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        InterceptorConfiguration.debugLog(&quot;无网缓存拦截器结束&quot;);</span><br><span class="line">        // 为空则抛异常交给调用层的回掉处理</span><br><span class="line">        if (response == null) throw new IOException() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public String getMessage() &#123;</span><br><span class="line">                return &quot;The requested address is empty in the database&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        return response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：!!!</strong><br>response.body() 使用完之后应调用 response.body().close() 源码文档强制要求<br>reponse.body().string() 只能被调用一次,因为调用完之后源码会关闭 IO 流 <code>Util.closeQuietly(source);</code>。</p>
+<p>未知问题，在无网时从数据库中读取数据拼接成响应体时不论设置请求还是设置响应的缓存过期时间都没用。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">response = new Response.Builder()</span><br><span class="line">        .removeHeader(&quot;Pragma&quot;)</span><br><span class="line">        .removeHeader(&quot;Cache-Control&quot;)</span><br><span class="line">        .header(&quot;Cache-Control&quot;, &quot;public, only-if-cached, max-stale=&quot; + 6)</span><br><span class="line">        .request(request.newBuilder().cacheControl(FORCE_MY_CACHE).build())</span><br><span class="line">        .body(ResponseBody.create(MediaType.parse(&quot;application/json&quot;), bs))</span><br><span class="line">        .message(httpDbBean.getMessage())</span><br><span class="line">        .code(httpDbBean.getCode())</span><br><span class="line">        .protocol(Protocol.HTTP_1_1)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/square/okhttp/wiki/Interceptors" target="_blank" rel="external">OkHttp 官当文档之 Interceptors</a></li>
+<li><a href="https://www.jianshu.com/p/fc4d4348dc58" target="_blank" rel="external">OkHttp 官当文档之 Interceptors 翻译版</a></li>
+<li><a href="https://www.jianshu.com/p/dbda0bb8d541" target="_blank" rel="external">Android okhttp缓存真正正确的实现方式</a></li>
+<li><a href="https://blog.csdn.net/m_xiaoer/article/details/72859908" target="_blank" rel="external">关于调用 response.body().string() 两次会报 IllegalStateException 异常</a></li>
+<li><a href="https://blog.csdn.net/dreamsever/article/details/78027907" target="_blank" rel="external">reponse.body().string() 只能被调用一次解决方案</a></li>
+<li><a href="https://blog.csdn.net/u010429311/article/details/59116706" target="_blank" rel="external">关于OkHttp缓存post请求的问题</a></li>
+<li>数据库使用<a href="https://github.com/LitePalFramework/LitePal" target="_blank" rel="external"> LitePal </a>，教程 <a href="https://blog.csdn.net/guolin_blog/article/details/38556989" target="_blank" rel="external">Android 数据库高手秘籍系列</a></li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/30/OkHttp-Interceptor/" data-id="cjqav6ib60005dwf0jg5cfqpz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/30/OkHttp-Interceptor/" data-id="cjqdtat2a00027of0vabdu2ge" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -202,7 +266,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/16/Android-SVG/" data-id="cjqav6iaz0001dwf0ziw8exsz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/16/Android-SVG/" data-id="cjqdtat2d00047of0d51iu397" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -302,7 +366,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/Android-单元测试/" data-id="cjqav6ic30007dwf0cp7s2oek" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/09/Android-单元测试/" data-id="cjqdtat2k00077of0s8sjs24r" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -359,7 +423,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjqav6iaq0000dwf05u1twoti" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/02/Android-中的-MVC/" data-id="cjqdtat2c00037of0umpiwc6f" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -445,7 +509,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjqav6ib20002dwf0t2pna7tl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-ConstraintLayout/" data-id="cjqdtat1z00007of0r0dfvmfj" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -526,7 +590,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjqav6ib50004dwf0fa5h7t0w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/29/Android-CoordinatorLayout/" data-id="cjqdtat2i00067of0r2hy883c" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -602,7 +666,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/18/Android-生命周期/" data-id="cjqav6ic40008dwf0aat9gg7g" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/18/Android-生命周期/" data-id="cjqdtat3500097of0fqmcuq48" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -676,7 +740,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/11/Android-启动模式/" data-id="cjqav6ib30003dwf08xeryaik" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/11/Android-启动模式/" data-id="cjqdtat2700017of0ahhb2xs4" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -730,7 +794,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjqav6ib80006dwf01s23thrg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/08/Hexo入门/" data-id="cjqdtat2f00057of0d09n1k8f" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -775,7 +839,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjqav6ic90009dwf0juj8ltmr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/11/08/hello-world/" data-id="cjqdtat2n00087of0kr0cc00y" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -810,7 +874,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -846,8 +910,8 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 Demon<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      &copy; 2019 Demon<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
